@@ -1,0 +1,9 @@
+[x] Configurar infraestrutura
+[x] Conectar na base de dados de acordo com o usuário da requisição
+[x] implementar serviço basico para trazer todos os usuários do banco
+[] Organizar camada logs
+[] Organizar camada de conexão com base de dados
+[] Organizar variaveis de ambiente
+[] implementar verbos HTTPs GET, POST, PUT, DELETE
+[] implementar documentação Swagger
+[] implementar DTO validation
