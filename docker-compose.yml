@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+  backoffice-enterprise-backend:
+    container_name: backoffice-enterprise-backend
+    restart: unless-stopped
+    platform: linux/amd64
+    env_file:
+      - ./.env
+    build:
+      context: .
+      target: development
+      dockerfile: Dockerfile
+    environment:
+      BACKEND_PORT: 3001
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+    volumes:
+      - ${PWD}/src:/app/src
+      - ${PWD}/node_modules:/app/node_modules
+      - ${PWD}/package.json:/app/package.json
+      - ${PWD}/tsconfig.json:/app/tsconfig.json
+      - ${PWD}/tsconfig.build.json:/app/tsconfig.build.json
+    ports:
+      - 3001:3001
+
+  backoffice-enterprise-frontend:
+    image: 'node:slim'
+    container_name: backoffice-enterprise-frontend
+    working_dir: /frontend
+    restart: unless-stopped
+    platform: linux/amd64
+    env_file:
+      - ./.env
+    environment:
+      BACKEND_PORT: ${BACKEND_PORT}
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+    volumes:
+      - ${PWD}/../angular/src:/frontend/src
+      - ${PWD}/../angular/node_modules:/frontend/node_modules
+      - ${PWD}/../angular/package.json:/frontend/package.json
+      - ${PWD}/../angular/tsconfig.json:/frontend/tsconfig.json
+      - ${PWD}/../angular/tsconfig.app.json:/frontend/tsconfig.app.json
+      - ${PWD}/../angular/karma.conf.js:/frontend/karma.conf.js
+      - ${PWD}/../angular/angular.json:/frontend/angular.json
+      - ${PWD}/../angular/.browserslistrc:/frontend/.browserslistrc
+    ports:
+      - 4200:4200
+    depends_on:
+      - backoffice-enterprise-backend
+    command: bash -c "npm i && npm run start"
